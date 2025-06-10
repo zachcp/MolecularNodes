@@ -137,8 +137,31 @@ class MVSJ_Blender_Single_Tree(MVSJ):
     model_config = {"extra": "allow"}
 
     def __init__(self, data):
-        super().__init__(data=data)
+        # Clean the data before passing to parent constructor
+        cleaned_data = self._clean_data(data)
+        # Pass data as the data parameter to parent constructor
+        super().__init__(data=cleaned_data)
         self.render_trees: List = []
+
+    def _clean_data(self, data):
+        """Clean data structure to ensure compatibility with MVSJ"""
+        if isinstance(data, dict):
+            cleaned = {}
+            for key, value in data.items():
+                if key == 'params' and value is None:
+                    # Skip None params or convert to empty dict
+                    cleaned[key] = {}
+                elif isinstance(value, dict):
+                    cleaned[key] = self._clean_data(value)
+                elif isinstance(value, list):
+                    cleaned[key] = [self._clean_data(item) for item in value]
+                else:
+                    cleaned[key] = value
+            return cleaned
+        elif isinstance(data, list):
+            return [self._clean_data(item) for item in data]
+        else:
+            return data
 
     def ensure_single(self):
         """check to see there is only one representation to wrok on """
@@ -169,7 +192,7 @@ class MVSJ_Blender_Single_Tree(MVSJ):
         #
         # create the molecule using
         # root -> download -> parse -> structure
-        root = self.data.root
+        root = getattr(self.data, 'root', self.data)
         print(root)
         # download = root.children[0]
         # parse = download.children[0]
