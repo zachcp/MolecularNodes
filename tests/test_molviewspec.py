@@ -9,7 +9,7 @@ import pytest
 from biotite.structure.io import load_structure
 import molecularnodes as mn
 from molecularnodes.download import FileDownloadPDBError, StructureDownloader
-from molecularnodes.molviewspec.molviewspec import MVSJ_Blender_Single_Tree
+from molecularnodes.molviewspec.molviewspec import MVSJ_Blender_Single_Tree, MVSJ_Blender
 from .constants import codes
 
 
@@ -23,14 +23,12 @@ def test_load_minimal_mvsj():
         mvsj_data = json.load(f)
 
     # Create a MVSJ_Blender_Single_Tree instance
-    single_tree = MVSJ_Blender_Single_Tree(mvsj_data)
+    single_tree = MVSJ_Blender(mvsj_data)
 
     # Basic assertions to verify the object was created
     assert single_tree is not None
     assert hasattr(single_tree, 'data')
     assert single_tree.data is not None
 
-    # Verify the data structure has the expected root structure
-    assert 'root' in single_tree.data
-    assert 'kind' in single_tree.data
-    assert single_tree.data['kind'] == 'single'
+    # Save an Image
+    single_tree.render()

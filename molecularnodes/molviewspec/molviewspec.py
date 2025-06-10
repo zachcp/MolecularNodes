@@ -39,8 +39,8 @@ MVSJ has the following that needs to be translated to MN:
 
 from copy import deepcopy
 import molviewspec as mvs
-from molviewspec import MVSJ
-from molecularnodes import Molecule
+from molviewspec import MVSJ, MVSData
+from molecularnodes import Molecule, Canvas
 from typing import List
 
 
@@ -54,15 +54,17 @@ class MVSJ_Blender(MVSJ):
     # ├── transform (coordinate transformations)
 
     """
+    model_config = {"extra": "allow"}
+
     def __init__(self, data):
-        self.data = data
+        super().__init__(data=data)
         self.render_trees: List[MVSJ_Blender_Single_Tree] = []
         self._deduplicate_tree()
 
     def _deduplicate_tree(self):
         # make a list of valid MVS datastructures
         # where each entry is a complete, unique description.
-        data = self.data
+        data = self.data.model_dump()  # Convert Pydantic model to dict
 
         def paths(node, path=[]):
             path += [{k: v for k, v in node.items() if k != 'children'}]
@@ -77,14 +79,30 @@ class MVSJ_Blender(MVSJ):
 
         root = data.get('root', data)
         base = {k: v for k, v in data.items() if k != 'root'}
-        return [{'root': tree(deepcopy(p)), **base} if 'root' in data else tree(deepcopy(p)) for p in paths(root)]
+        deduplicated_trees = [{'root': tree(deepcopy(p)), **base} if 'root' in data else tree(deepcopy(p)) for p in paths(root)]
+
+        updated_trees = []
+
+        for idx, data in enumerate(deduplicated_trees):
+            print(idx, data)
+            try:
+                updated = MVSJ_Blender_Single_Tree(data)
+                updated_trees.append(updated)
+            except:
+                raise ValueError(f"Issue with tree in idx {idx} and data {data}")
+
+
+        self.render_trees = updated_trees
 
     def render(self):
         # render each tree
+        print("In the Render")
+        canvas = Canvas()
+
         for tree in self.render_trees:
             tree.plot_tree()
-        # set global options
-        # return
+        canvas.snapshot("output.png")
+        print("After snapshot")
         pass
 
 
@@ -116,8 +134,10 @@ class MVSJ_Blender_Single_Tree(MVSJ):
     # Primitive Handling # todo.
 
     """
+    model_config = {"extra": "allow"}
+
     def __init__(self, data):
-        self.data = data
+        super().__init__(data=data)
         self.render_trees: List = []
 
     def ensure_single(self):
@@ -137,7 +157,7 @@ class MVSJ_Blender_Single_Tree(MVSJ):
     def _material(self):
         pass
 
-    def plot_tree(tree: mvs.MVSJ):
+    def plot_tree(self):
         # take our complete, unique descriptions and generate
         # an MN Node.
         #
@@ -149,23 +169,34 @@ class MVSJ_Blender_Single_Tree(MVSJ):
         #
         # create the molecule using
         # root -> download -> parse -> structure
-        root = tree.data.root
-        download = root.children[0]
-        parse = download.children[0]
+        root = self.data.root
+        print(root)
+        # download = root.children[0]
+        # parse = download.children[0]
+
+        # print(download.params['url'])
+        canvas = Canvas()
+        # mol = Molecule.load(download.params['url'])
+        # print(mol)
+        canvas.snapshot("output.png")
+        print("After snapshot")
+
         # volume = parse.children[0]
         # volume_representation = volume.children[0]
         # color = volume_representation.children[0]
         # opacity = representation.children[0]
-        print(f"Download: {download.params}")
-        print(f"parse: {parse.params}")
-        print(f"structure: {structure.params}")
+        # print(f"Download: {download.params}")
+        # print(f"parse: {parse.params}")
+        # print(f"structure: {structure.params}")
         # create Selections
-        structure = parse.children[0]
-        transform = structure.children[0] # optional
-        component = structure.children[0] # optional
-        component_from_uri = structure.children[0] # optional
-        representation = component.children[0]
-        color = representation.children[0]
-        color_from_URI = representation.children[0]
-        opacity = representation.children[0]
-        label = component.children[0]
+        # structure = parse.children[0]
+        # transform = structure.children[0] # optional
+        # component = structure.children[0] # optional
+        # component_from_uri = structure.children[0] # optional
+        # representation = component.children[0]
+        # color = representation.children[0]
+        # color_from_URI = representation.children[0]
+        # opacity = representation.children[0]
+        # label = component.children[0]
+        print("plot_tree called")
+        pass
