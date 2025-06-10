@@ -44,7 +44,7 @@ from molecularnodes import Molecule
 from typing import List
 
 
-class MVSJ_Blender(MVSJ):
+class MVSJ_Blender:
     """
     This class converts MVSJ to unique, renderable components and also handles global rendering.
 
@@ -54,8 +54,9 @@ class MVSJ_Blender(MVSJ):
     # ├── transform (coordinate transformations)
 
     """
-    self.data: MVSJ
-    self.render_trees: List[MVSJ_Blender_Single_Tree]
+    def __init__(self, data):
+        self.data = data
+        self.render_trees: List[MVSJ_Blender_Single_Tree] = []
 
     def deduplicate_tree(self):
         # make a list of valid MVS datastructures
@@ -84,7 +85,7 @@ class MVSJ_Blender(MVSJ):
         pass
 
 
-class MVSJ_Blender_Single_Tree(MVSJ):
+class MVSJ_Blender_Single_Tree:
     """
     This class holds a tree representing one complete, single representation.
 
@@ -112,8 +113,9 @@ class MVSJ_Blender_Single_Tree(MVSJ):
     # Primitive Handling # todo.
 
     """
-    self.data: MVSJ
-    self.render_trees: List[]
+    def __init__(self, data):
+        self.data = data
+        self.render_trees: List = []
 
     def ensure_single(self):
         """check to see there is only one representation to wrok on """
@@ -147,9 +149,9 @@ class MVSJ_Blender_Single_Tree(MVSJ):
         download = root.children[0]
         parse = download.children[0]
         # volume = parse.children[0]
-            # volume_representation = volume.children[0]
-            # color = volume_representation.children[0]
-            # opacity = representation.children[0]
+        # volume_representation = volume.children[0]
+        # color = volume_representation.children[0]
+        # opacity = representation.children[0]
         print(f"Download: {download.params}")
         print(f"parse: {parse.params}")
         print(f"structure: {structure.params}")
@@ -158,8 +160,8 @@ class MVSJ_Blender_Single_Tree(MVSJ):
         transform = structure.children[0] # optional
         component = structure.children[0] # optional
         component_from_uri = structure.children[0] # optional
-            representation = component.children[0]
-                color = representation.children[0]
-                color_from_URI = representation.children[0]
-                opacity = representation.children[0]
-            label = component.children[0]
+        representation = component.children[0]
+        color = representation.children[0]
+        color_from_URI = representation.children[0]
+        opacity = representation.children[0]
+        label = component.children[0]
