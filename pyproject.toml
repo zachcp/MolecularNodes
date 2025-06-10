@@ -1,16 +1,17 @@
 [project]
-name = "molecularnodes"
-version = "4.4.3"
-description = "Toolbox for molecular animations with Blender and Geometry Nodes."
-readme = "README.md"
 dependencies = [
     "databpy>=0.0.19",
     "MDAnalysis>=2.7.0",
     "biotite>=1.1",
     "mrcfile",
     "starfile",
-    "PyYAML"
+    "PyYAML",
+    "molviewspec",
 ]
+name = "molecularnodes"
+version = "4.4.3"
+description = "Toolbox for molecular animations with Blender and Geometry Nodes."
+readme = "README.md"
 maintainers = [{ name = "Brady Johnston", email = "brady.johnston@me.com" }]
 requires-python = "~=3.11"
 
@@ -24,7 +25,14 @@ bpy = ["bpy>=4.4"]
 jupyter = ["jupyter", "IPython"]
 dev = ["pytest", "pytest-cov", "syrupy", "scipy", "fake-bpy-module", "IPython"]
 test = ["pytest", "pytest-cov", "syrupy", "scipy", "IPython", "pytest-xdist"]
-docs = ["quartodoc", "tomlkit", "nodepad", "jupyter", "IPython", "jupyter-cache"]
+docs = [
+    "quartodoc",
+    "tomlkit",
+    "nodepad",
+    "jupyter",
+    "IPython",
+    "jupyter-cache",
+]
 
 [build-system]
 build-backend = "setuptools.build_meta"
@@ -49,12 +57,12 @@ ignore = [
     "N806",
 
     # 'molecularnodes' when used as a Blender extension may not actually be named
-    # 'molecularnodes' (potentially user_default.molecularnodes for example) so we have to 
-    # use relative imports: 
+    # 'molecularnodes' (potentially user_default.molecularnodes for example) so we have to
+    # use relative imports:
     # https://docs.blender.org/manual/en/latest/advanced/extensions/addons.html#extensions-and-namespace
     "TID252", # Prefer absolute imports over relative imports from parent modules
-    "N813", # Camelcase `MDAnalysis` imported as lowercase `mda`
-    "N801", # Class name `MN_UL_TrajectorySelectionListUI` should use CapWords convention
+    "N813",   # Camelcase `MDAnalysis` imported as lowercase `mda`
+    "N801",   # Class name `MN_UL_TrajectorySelectionListUI` should use CapWords convention
 ]
 
 [tool.ruff.lint.isort]
