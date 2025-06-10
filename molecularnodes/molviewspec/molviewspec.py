@@ -44,7 +44,7 @@ from molecularnodes import Molecule
 from typing import List
 
 
-class MVSJ_Blender:
+class MVSJ_Blender(MVSJ):
     """
     This class converts MVSJ to unique, renderable components and also handles global rendering.
 
@@ -57,8 +57,9 @@ class MVSJ_Blender:
     def __init__(self, data):
         self.data = data
         self.render_trees: List[MVSJ_Blender_Single_Tree] = []
+        self._deduplicate_tree()
 
-    def deduplicate_tree(self):
+    def _deduplicate_tree(self):
         # make a list of valid MVS datastructures
         # where each entry is a complete, unique description.
         data = self.data
@@ -80,12 +81,14 @@ class MVSJ_Blender:
 
     def render(self):
         # render each tree
+        for tree in self.render_trees:
+            tree.plot_tree()
         # set global options
         # return
         pass
 
 
-class MVSJ_Blender_Single_Tree:
+class MVSJ_Blender_Single_Tree(MVSJ):
     """
     This class holds a tree representing one complete, single representation.
 
@@ -133,6 +136,7 @@ class MVSJ_Blender_Single_Tree:
         pass
     def _material(self):
         pass
+
     def plot_tree(tree: mvs.MVSJ):
         # take our complete, unique descriptions and generate
         # an MN Node.
