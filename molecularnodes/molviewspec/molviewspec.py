@@ -1,3 +1,42 @@
+"""
+
+MVSJ has the following that needs to be translated to MN:
+
+# Data Load:
+# root
+# └── download (fetch structure data)
+#     └── parse (interpret file format: mmcif, pdb, etc.)
+#         └── structure (create 3D structure: model, assembly, etc.)
+#
+#
+# Select components and apply styles
+# structure
+# └── component (select atoms/residues/chains)
+#     ├── representation (cartoon, ball_and_stick, surface, etc.)
+#     │   ├── color (styling)
+#     │   ├── label (annotations)
+#     │   ├── tooltip (hover info)
+#     │   └── opacity (transparency)
+#     └── focus (camera targeting)
+#
+# Primitive Handling:
+#  root (or any level)
+# └── primitives (grouping container)
+#     ├── primitive (individual shapes)
+#     │   ├── tube, arrow, box, ellipse
+#     │   ├── distance_measurement
+#     │   └── angle_measurement
+#     └── primitives_from_uri (load external primitives)
+#
+# Globals
+# root
+# ├── camera (viewpoint: position, target, up)
+# ├── canvas (background color, etc.)
+# ├── transform (coordinate transformations)
+# └── volume (volumetric data like electron density)
+#     └── volume_representation (isosurface)
+"""
+
 from copy import deepcopy
 import molviewspec as mvs
 from molviewspec import MVSJ
@@ -6,6 +45,15 @@ from typing import List
 
 
 class MVSJ_Blender(MVSJ):
+    """
+    This class converts MVSJ to unique, renderable components and also handles global rendering.
+
+    # Handle Globals
+    # ├── camera (viewpoint: position, target, up)
+    # ├── canvas (background color, etc.)
+    # ├── transform (coordinate transformations)
+
+    """
     self.data: MVSJ
     self.render_trees: List[MVSJ_Blender_Single_Tree]
 
@@ -39,6 +87,30 @@ class MVSJ_Blender(MVSJ):
 class MVSJ_Blender_Single_Tree(MVSJ):
     """
     This class holds a tree representing one complete, single representation.
+
+
+    # Data Load:
+    #   - determine format:
+    #       - Molecule
+    #       - Trajectory
+    #       - Volume
+
+
+    # Select components
+    # structure
+    # └── component (select atoms/residues/chains)
+    #
+
+    # Apply styles
+    #     ├── representation (cartoon, ball_and_stick, surface, etc.)
+    #     │   ├── color (styling)
+    #     │   ├── label (annotations)     # todo
+    #     │   ├── tooltip (hover info)    # todo
+    #     │   └── opacity (transparency)
+    #     └── focus (camera targeting)     # todo
+    #
+    # Primitive Handling # todo.
+
     """
     self.data: MVSJ
     self.render_trees: List[]
@@ -50,6 +122,15 @@ class MVSJ_Blender_Single_Tree(MVSJ):
     def create_blender_name(self):
         pass
 
+
+    def _load(self):
+        pass
+    def _select(self):
+        pass
+    def _style(self):
+        pass
+    def _material(self):
+        pass
     def plot_tree(tree: mvs.MVSJ):
         # take our complete, unique descriptions and generate
         # an MN Node.
